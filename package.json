@@ -1,0 +1,31 @@
+{
+  "name": "bson-stream",
+  "version": "0.0.1",
+  "author": {
+    "name": "Tim Kuijsten",
+    "email": "tim@netsend.nl",
+    "url": "https://github.com/timkuijsten"
+  },
+  "license": "MIT",
+  "description": "Read a binary stream that contains BSON objects and emit each as a JavaScript object.",
+  "keywords": [
+    "bson",
+    "stream",
+    "parser"
+  ],
+  "dependencies": {
+    "bson": "~0.2.15"
+  },
+  "devDependencies": {
+    "mocha": ">=1.21.4",
+    "should": ">=1.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Netsend/node-bson-stream.git"
+  },
+  "bugs": "https://github.com/Netsend/node-bson-stream/issues",
+  "scripts": {
+    "test": "mocha ./test"
+  }
+}
