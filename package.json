@@ -22,9 +22,9 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/Netsend/node-bson-stream.git"
+    "url": "git://github.com/timkuijsten/node-bson-stream.git"
   },
-  "bugs": "https://github.com/Netsend/node-bson-stream/issues",
+  "bugs": "https://github.com/timkuijsten/node-bson-stream/issues",
   "scripts": {
     "test": "mocha ./test"
   }
