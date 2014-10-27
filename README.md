@@ -6,7 +6,7 @@ object.
 
 ## Example
 
-Output each object of a BSON file created with mongodump:
+Write each object of a BSON file created with mongodump to stdout:
 
     var fs = require('fs');
     var BSONStream = require('bson-stream');
