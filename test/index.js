@@ -41,6 +41,10 @@ describe('BSONStream', function() {
     (function() { var bs = new BSONStream({ maxDocLength: '' }); return bs; }).should.throw('opts.maxDocLength must be a number');
   });
 
+  it('should require opts.maxBytes to be a number', function() {
+    (function() { var bs = new BSONStream({ maxBytes: '' }); return bs; }).should.throw('opts.maxBytes must be a number');
+  });
+
   it('should require opts.debug to be a boolean', function() {
     (function() { var bs = new BSONStream({ debug: '' }); return bs; }).should.throw('opts.debug must be a boolean');
   });
