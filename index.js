@@ -40,6 +40,7 @@ var BSON = require('bson').BSONPure.BSON;
 * opts:
 * raw {Boolean, default false} whether to emit JavaScript objects or raw Buffers
 * maxDocLength {Number, default 16777216} maximum BSON document size in bytes
+* maxBytes {Number, default infinite} maximum number of bytes to receive
 * debug {Boolean, default false} whether to do extra console logging or not
 * hide {Boolean, default false} whether to suppress errors or not (used in tests)
 */
@@ -49,6 +50,7 @@ function BSONStream(opts) {
 
   if (typeof opts.raw !== 'undefined' && typeof opts.raw !== 'boolean') { throw new TypeError('opts.raw must be a boolean'); }
   if (typeof opts.maxDocLength !== 'undefined' && typeof opts.maxDocLength !== 'number') { throw new TypeError('opts.maxDocLength must be a number'); }
+  if (typeof opts.maxBytes !== 'undefined' && typeof opts.maxBytes !== 'number') { throw new TypeError('opts.maxBytes must be a number'); }
   if (typeof opts.debug !== 'undefined' && typeof opts.debug !== 'boolean') { throw new TypeError('opts.debug must be a boolean'); }
   if (typeof opts.hide !== 'undefined' && typeof opts.hide !== 'boolean') { throw new TypeError('opts.hide must be a boolean'); }
 
@@ -57,6 +59,8 @@ function BSONStream(opts) {
   this._maxDocLength = opts.maxDocLength || 16777216;
   // bson spec: signed int32
   if (this._maxDocLength > 2147483647) { throw new Error('maxDocLength can not exceed 2147483647 bytes'); }
+
+  this._maxBytes = opts.maxBytes;
 
   this._raw = opts.raw;
   this._debug = opts.debug || false;
@@ -164,6 +168,13 @@ BSONStream.prototype._parseDocs = function _parseDocs(cb) {
 BSONStream.prototype._transform = function _transform(chunk, encoding, cb) {
   if (this._debug) { console.log('_transform', chunk); }
 
-  this._buffer = Buffer.concat([this._buffer, chunk], this._buffer.length + chunk.length);
+  var newLength = this._buffer.length + chunk.length;
+
+  if (this._maxBytes && newLength > this._maxBytes) {
+    cb(new Error('more than maxBytes received'));
+    return;
+  }
+
+  this._buffer = Buffer.concat([this._buffer, chunk], newLength);
   this._parseDocs(cb);
 };

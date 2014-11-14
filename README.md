@@ -34,6 +34,7 @@ Write each object of a BSON file created with mongodump to stdout:
 opts:
 * raw {Boolean, default false} whether to emit JavaScript objects or raw Buffers
 * maxDocLength {Number, default 16777216} maximum BSON document size in bytes
+* maxBytes {Number, default infinite} maximum number of bytes to receive
 * debug {Boolean, default false} whether to do extra console logging or not
 * hide {Boolean, default false} whether to suppress errors or not (used in tests)
 

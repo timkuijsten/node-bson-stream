@@ -91,8 +91,18 @@ describe('BSONStream', function() {
     bs.end(new Buffer([0x05, 0x00, 0x00, 0x00, 0x00]));
   });
 
+  it('should err when more than maxBytes are written', function(done) {
+    var bs = new BSONStream({ raw: true, maxBytes: 4 });
+    bs.on('error', function(err) {
+      should.strictEqual(err.message, 'more than maxBytes received');
+      done();
+    });
+    bs.on('data', function() { throw Error('incomplete BSON emitted'); });
+    bs.end(new Buffer([0x05, 0x00, 0x00, 0x00, 0x00]));
+  });
+
   it('should require a document length of at least 5 bytes', function(done) {
-    var bs = new BSONStream();
+    var bs = new BSONStream({ maxBytes: 5 });
     bs.on('error', function(err) {
       should.strictEqual(err.message, 'invalid document length');
       done();
