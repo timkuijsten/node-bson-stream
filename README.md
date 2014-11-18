@@ -12,11 +12,8 @@ Write each object of a BSON file created with mongodump to stdout:
     var BSONStream = require('bson-stream');
 
     var rs = fs.createReadStream('/some/data.bson');
-    var bs = new BSONStream();
 
-    rs.pipe(bs);
-
-    bs.on('data', function(obj) {
+    rs.pipe(new BSONStream()).on('data', function(obj) {
       console.log(obj);
     });
 
