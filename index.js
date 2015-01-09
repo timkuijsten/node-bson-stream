@@ -35,6 +35,8 @@ var BSON = require('bson').BSONPure.BSON;
 * Note: implements BSON specification 1.0 (http://bsonspec.org/spec.html), as
 * supported by js-bson (https://www.npmjs.org/package/bson).
 *
+* Note2: Buffer objects will be embedded in a new BSON Buffer object at `buffer`.
+*
 * @param {Object} [opts] object containing optional parameters
 *
 * opts:

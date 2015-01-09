@@ -17,6 +17,25 @@ Write each object of a BSON file created with mongodump to stdout:
       console.log(obj);
     });
 
+Example with an object containing a Buffer object as a value. The Buffer will be
+embedded when serialized by the BSON npm:
+
+    var assert = require('assert');
+    var BSON = require('bson').BSONPure.BSON;
+    var BSONStream = require('bson-stream');
+
+    var buf = new Buffer([65, 67, 70]); // 'ACF'
+    var obj = { foo: buf };
+
+    var bs = new BSONStream();
+    bs.on('data', function(obj) {
+      // the original Buffer value is embedded in a new BSON Buffer object and
+      // stored at the `buffer` key
+      assert.strictEqual(obj.foo.buffer.toString(), 'ACF');
+    });
+
+    bs.end(BSON.serialize(obj));
+
 
 ## Installation
 
@@ -41,9 +60,12 @@ object (or as a Buffer if opts.raw is true).
 Note: implements BSON specification 1.0 (http://bsonspec.org/spec.html), as
 supported by js-bson (https://www.npmjs.org/package/bson).
 
+Note2: Buffer objects will be embedded in a new BSON Buffer object at `buffer`.
+
+
 ## Tests
 
-    $ mocha test
+    $ npm test
 
 
 # License

@@ -23,6 +23,9 @@
 
 /*jshint -W068 */
 
+var fs = require('fs');
+var crypto = require('crypto');
+
 var should = require('should');
 
 var BSONStream = require('../index.js');
@@ -255,5 +258,43 @@ describe('BSONStream', function() {
     bs.write(Buffer.concat([BSON.serialize(obj1), noise, BSON.serialize(obj2)]));
     bs.write(Buffer.concat([BSON.serialize(obj2)]));
     bs.end();
+  });
+
+  it('stream binary data from disk', function(done) {
+    fs.readFile(__dirname + '/image.png', function(err, data) {
+      if (err) { throw err; }
+
+      should.strictEqual(data.length, 121271);
+
+      var shasum = crypto.createHash('sha1');
+      shasum.update(data);
+      should.strictEqual(shasum.digest('hex'), '6b7e9149ba026c6b413f40f5d4ac02fd57cdd57c');
+
+      var obj = { foo: data };
+
+      var bs = new BSONStream();
+
+      var arr = [];
+
+      bs.on('data', function(data) {
+        arr.push(data);
+      });
+
+      bs.on('error', function(err) {
+        should.strictEqual(err.message, 'document exceeds configured maximum length');
+      });
+
+      bs.on('end', function() {
+        should.strictEqual(arr.length, 1);
+        should.strictEqual(arr[0].foo.buffer.length, 121271);
+
+        var shasum2 = crypto.createHash('sha1');
+        shasum2.update(arr[0].foo.buffer);
+        should.strictEqual(shasum2.digest('hex'), '6b7e9149ba026c6b413f40f5d4ac02fd57cdd57c');
+        done();
+      });
+
+      bs.end(BSON.serialize(obj));
+    });
   });
 });
