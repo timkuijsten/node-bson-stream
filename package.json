@@ -6,7 +6,7 @@
     "email": "tim@netsend.nl",
     "url": "https://github.com/timkuijsten"
   },
-  "license": "MIT",
+  "license": "ISC",
   "description": "Read a binary stream that contains BSON objects and emit each as a JavaScript object.",
   "keywords": [
     "bson",
