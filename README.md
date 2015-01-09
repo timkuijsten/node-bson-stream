@@ -68,7 +68,7 @@ Note2: Buffer objects will be embedded in a new BSON Buffer object at `buffer`.
     $ npm test
 
 
-# License
+## License
 
 ISC
 
