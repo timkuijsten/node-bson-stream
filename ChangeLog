@@ -1,3 +1,6 @@
+2015.08.31, Version 0.0.6
+
+* fix compatibility with bson 0.x (namely 0.4.x)
 * Readme: markup
 
 
