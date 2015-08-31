@@ -22,9 +22,10 @@ var fs = require('fs');
 var crypto = require('crypto');
 
 var should = require('should');
+var bson = require('bson');
+var BSON = new bson.BSONPure.BSON();
 
 var BSONStream = require('../index.js');
-var BSON = require('bson').BSONPure.BSON;
 
 describe('BSONStream', function() {
   it('should require opts to be an object', function() {

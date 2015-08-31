@@ -14,11 +14,11 @@
     "parser"
   ],
   "dependencies": {
-    "bson": "~0.2.15"
+    "bson": "0.x"
   },
   "devDependencies": {
-    "mocha": ">=1.21.4",
-    "should": ">=1.2.2"
+    "mocha": "1.x",
+    "should": "1.x"
   },
   "repository": {
     "type": "git",

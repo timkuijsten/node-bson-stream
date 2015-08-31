@@ -21,7 +21,8 @@ Example with an object containing a Buffer object as a value. The Buffer will be
 embedded when serialized by the BSON npm:
 
     var assert = require('assert');
-    var BSON = require('bson').BSONPure.BSON;
+    var bson = require("bson");
+    var BSON = new bson.BSONPure.BSON();
     var BSONStream = require('bson-stream');
 
     var buf = new Buffer([65, 67, 70]); // 'ACF'
