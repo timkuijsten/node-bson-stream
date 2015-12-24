@@ -1,6 +1,6 @@
 {
   "name": "bson-stream",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": {
     "name": "Tim Kuijsten",
     "email": "tim@netsend.nl",
@@ -14,7 +14,7 @@
     "parser"
   ],
   "dependencies": {
-    "bson": "0.x"
+    "bson": "^0.4.20"
   },
   "devDependencies": {
     "mocha": "1.x",
