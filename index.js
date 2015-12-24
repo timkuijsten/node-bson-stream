@@ -19,8 +19,12 @@
 var util = require('util');
 var Transform = require('stream').Transform;
 
-var bson = require('bson');
-var BSON = new bson.BSONPure.BSON();
+var BSON, bson = require('bson');
+if (process.browser) {
+  BSON = bson;
+} else {
+  BSON = new bson.BSONPure.BSON();
+}
 
 /**
 * BSONStream
