@@ -21,7 +21,7 @@ var Transform = require('stream').Transform;
 
 var BSON, bson = require('bson');
 if (process.browser) {
-  BSON = bson;
+  BSON = new bson();
 } else {
   BSON = new bson.BSONPure.BSON();
 }
