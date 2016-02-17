@@ -41,6 +41,8 @@ if (process.browser) {
 *
 * opts:
 * raw {Boolean, default false} whether to emit JavaScript objects or raw Buffers
+* validateRaw {Boolean, defaults false} only used when raw = true, whether to 
+*   validate the raw Buffer before emitting by parsing it.
 * maxDocLength {Number, default 16777216} maximum BSON document size in bytes
 * maxBytes {Number, default infinite} maximum number of bytes to receive
 * debug {Boolean, default false} whether to do extra console logging or not
@@ -51,6 +53,7 @@ function BSONStream(opts) {
   opts = opts || {};
 
   if (typeof opts.raw !== 'undefined' && typeof opts.raw !== 'boolean') { throw new TypeError('opts.raw must be a boolean'); }
+  if (typeof opts.validateRaw !== 'undefined' && typeof opts.validateRaw !== 'boolean') { throw new TypeError('opts.validateRaw must be a boolean'); }
   if (typeof opts.maxDocLength !== 'undefined' && typeof opts.maxDocLength !== 'number') { throw new TypeError('opts.maxDocLength must be a number'); }
   if (typeof opts.maxBytes !== 'undefined' && typeof opts.maxBytes !== 'number') { throw new TypeError('opts.maxBytes must be a number'); }
   if (typeof opts.debug !== 'undefined' && typeof opts.debug !== 'boolean') { throw new TypeError('opts.debug must be a boolean'); }
@@ -65,6 +68,7 @@ function BSONStream(opts) {
   this._maxBytes = opts.maxBytes;
 
   this._raw = opts.raw === true ? true : false;
+  this._validateRaw = opts.validateRaw === true ? true : false;
   this._debug = opts.debug === true ? true : false
   this._hide = opts.hide === true ? true : false;
 
@@ -143,7 +147,7 @@ BSONStream.prototype._parseDocs = function _parseDocs(cb) {
   var rawdoc = this._buffer.slice(0, this._doclen);
   var obj;
 
-  if (this._raw === false) {
+  if (this._raw === false || this._validateRaw === true) {
     try {
       obj = BSON.deserialize(rawdoc);
     } catch (err) {

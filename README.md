@@ -50,6 +50,8 @@ embedded when serialized by the BSON npm:
 
 opts:
 * raw {Boolean, default false} whether to emit JavaScript objects or raw Buffers
+* validateRaw {Boolean, defaults false} only used when raw = true, whether to 
+*   validate the raw Buffer before emitting by parsing it.
 * maxDocLength {Number, default 16777216} maximum BSON document size in bytes
 * maxBytes {Number, default infinite} maximum number of bytes to receive
 * debug {Boolean, default false} whether to do extra console logging or not
