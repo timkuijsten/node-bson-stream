@@ -143,13 +143,15 @@ BSONStream.prototype._parseDocs = function _parseDocs(cb) {
   var rawdoc = this._buffer.slice(0, this._doclen);
   var obj;
 
-  try {
-    obj = BSON.deserialize(rawdoc);
-  } catch (err) {
-    // discard buffer
-    this._reset();
-    cb(err);
-    return;
+  if (this._raw === false) {
+    try {
+      obj = BSON.deserialize(rawdoc);
+    } catch (err) {
+      // discard buffer
+      this._reset();
+      cb(err);
+      return;
+    }
   }
 
   // shift document from internal buffer and nullify expected document length
