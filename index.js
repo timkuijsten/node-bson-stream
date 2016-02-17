@@ -64,12 +64,12 @@ function BSONStream(opts) {
 
   this._maxBytes = opts.maxBytes;
 
-  this._raw = opts.raw;
-  this._debug = opts.debug || false;
-  this._hide = !!opts.hide;
+  this._raw = opts.raw === true ? true : false;
+  this._debug = opts.debug === true ? true : false
+  this._hide = opts.hide === true ? true : false;
 
   this._writableState.objectMode = false;
-  if (!this._raw) {
+  if (this._raw === false) {
     this._readableState.objectMode = true;
   }
 
