@@ -19,12 +19,8 @@
 var util = require('util');
 var Transform = require('stream').Transform;
 
-var BSON, bson = require('bson');
-if (process.browser) {
-  BSON = new bson();
-} else {
-  BSON = new bson.BSONPure.BSON();
-}
+var BSON, BSONModule = require('bson');
+BSON = new BSONModule();
 
 /**
 * BSONStream
@@ -45,6 +41,7 @@ if (process.browser) {
 * maxBytes {Number, default infinite} maximum number of bytes to receive
 * debug {Boolean, default false} whether to do extra console logging or not
 * hide {Boolean, default false} whether to suppress errors or not (used in tests)
+* BSON {Object, default new require('bson')} whether to use a different BSON implementation
 */
 function BSONStream(opts) {
   if (typeof opts !== 'undefined' && typeof opts !== 'object') { throw new TypeError('opts must be an object'); }
@@ -55,6 +52,8 @@ function BSONStream(opts) {
   if (typeof opts.maxBytes !== 'undefined' && typeof opts.maxBytes !== 'number') { throw new TypeError('opts.maxBytes must be a number'); }
   if (typeof opts.debug !== 'undefined' && typeof opts.debug !== 'boolean') { throw new TypeError('opts.debug must be a boolean'); }
   if (typeof opts.hide !== 'undefined' && typeof opts.hide !== 'boolean') { throw new TypeError('opts.hide must be a boolean'); }
+  if (typeof opts.BSON !== 'undefined' && typeof opts.BSON !== 'object') { throw new TypeError('opts.BSON must be an object'); }
+  if (opts.BSON) { BSON = opts.BSON; }
 
   Transform.call(this, opts);
 

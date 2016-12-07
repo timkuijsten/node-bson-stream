@@ -14,7 +14,7 @@
     "parser"
   ],
   "dependencies": {
-    "bson": "^0.4.20"
+    "bson": "^1.0.1"
   },
   "devDependencies": {
     "mocha": "1.x",
