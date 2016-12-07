@@ -22,8 +22,8 @@ var fs = require('fs');
 var crypto = require('crypto');
 
 var should = require('should');
-var bson = require('bson');
-var BSON = new bson.BSON();
+var BSONModule = require('bson');
+var BSON = new BSONModule();
 
 var BSONStream = require('../index.js');
 
@@ -50,6 +50,10 @@ describe('BSONStream', function() {
 
   it('should require opts.hide to be a boolean', function() {
     (function() { var bs = new BSONStream({ hide: '' }); return bs; }).should.throw('opts.hide must be a boolean');
+  });
+
+  it('should require opts.BSON to be an object', function() {
+    (function() { return new BSONStream({BSON: false}); }).should.throw('opts.BSON must be an object');
   });
 
   it('should construct', function() {
