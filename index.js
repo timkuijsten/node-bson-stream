@@ -23,7 +23,7 @@ var BSON, bson = require('bson');
 if (process.browser) {
   BSON = new bson();
 } else {
-  BSON = new bson.BSONPure.BSON();
+  BSON = new bson.BSON();
 }
 
 /**

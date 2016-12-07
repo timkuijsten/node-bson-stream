@@ -23,7 +23,7 @@ var crypto = require('crypto');
 
 var should = require('should');
 var bson = require('bson');
-var BSON = new bson.BSONPure.BSON();
+var BSON = new bson.BSON();
 
 var BSONStream = require('../index.js');
 
