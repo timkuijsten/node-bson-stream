@@ -295,8 +295,9 @@ describe('BSONStream', function() {
   });
 
   it('receive a large document relatively fast', function(done) {
+    this.timeout(5000);
     var bs = new BSONStream();
-    var data = { foo: (new Array(300 * 1000)).fill(0) };
+    var data = { foo: (new Array(1000 * 1000)).fill(0) };
     bs.on('data', function(obj) {
       should.deepEqual(obj, data);
       done();
