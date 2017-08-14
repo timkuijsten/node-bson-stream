@@ -18,6 +18,7 @@
 
 var util = require('util');
 var Transform = require('stream').Transform;
+var assert = require('assert');
 
 var BSON, bson = require('bson');
 if (process.browser) {
@@ -84,7 +85,10 @@ module.exports = BSONStream;
 BSONStream.prototype._reset = function _reset() {
   if (this._debug) { console.log('_reset'); }
 
+  this._buffersTotalLength = 0;
+  this._buffers = [];
   this._buffer = new Buffer(0);
+  this._remainingDocLen = null;
   this._doclen = null;
 };
 
@@ -92,8 +96,11 @@ BSONStream.prototype._reset = function _reset() {
 BSONStream.prototype._parseDocs = function _parseDocs(cb) {
   if (this._debug) { console.log('_parseDocs'); }
 
+
   // first make sure the expected document length is known
-  if (!this._doclen) {
+  if (this._remainingDocLen === null) {
+
+
     if (this._buffer.length < 4) {
       // wait for more chunks
       cb();
@@ -104,6 +111,7 @@ BSONStream.prototype._parseDocs = function _parseDocs(cb) {
     var doclen = this._buffer.readInt32LE(0);
 
     if (this._debug) { console.log('_parseDocs doc length', doclen); }
+
 
     // should have at least have 5 bytes since the minimum document contains an int32 and a \x00 terminal
     if (doclen < 5) {
@@ -120,11 +128,14 @@ BSONStream.prototype._parseDocs = function _parseDocs(cb) {
       return;
     }
 
+    this._remainingDocLen = doclen;
     this._doclen = doclen;
+
+
   }
 
   // since the expected document length is known, make sure the complete length is in the internal buffer
-  if (this._buffer.length < this._doclen) {
+  if (this._buffer.length < this._remainingDocLen) {
     // wait for more chunks
     cb();
     return;
@@ -133,14 +144,22 @@ BSONStream.prototype._parseDocs = function _parseDocs(cb) {
   // since the complete document is in the buffer, try to read and parse it as BSON
 
   // check if document ends with 0x00
-  if (this._buffer[this._doclen - 1] !== 0x00) {
+  if (this._buffer[this._remainingDocLen - 1] !== 0x00) {
+
     // discard buffer
     this._reset();
     cb(new Error('invalid document termination'));
     return;
   }
 
-  var rawdoc = this._buffer.slice(0, this._doclen);
+  this._buffers.push(this._buffer.slice(0, this._remainingDocLen));
+  this._buffersTotalLength += this._remainingDocLen;
+
+
+
+  assert(this._buffersTotalLength == this._doclen);
+
+  var rawdoc = Buffer.concat(this._buffers, this._doclen);
   var obj;
 
   try {
@@ -153,7 +172,10 @@ BSONStream.prototype._parseDocs = function _parseDocs(cb) {
   }
 
   // shift document from internal buffer and nullify expected document length
-  this._buffer = this._buffer.slice(this._doclen);
+  this._buffer = this._buffer.slice(this._remainingDocLen);
+  this._buffers = [];
+  this._buffersTotalLength = 0;
+  this._remainingDocLen = null;
   this._doclen = null;
 
   // push the raw or parsed doc out to the reader
@@ -170,13 +192,17 @@ BSONStream.prototype._parseDocs = function _parseDocs(cb) {
 BSONStream.prototype._transform = function _transform(chunk, encoding, cb) {
   if (this._debug) { console.log('_transform', chunk); }
 
-  var newLength = this._buffer.length + chunk.length;
+  if (this._remainingDocLen !== null) {
+    this._buffers.push(this._buffer);
+    this._buffersTotalLength += this._buffer.length;
+    this._remainingDocLen -= this._buffer.length;
+  }
+  this._buffer = chunk;
 
-  if (this._maxBytes && newLength > this._maxBytes) {
+  if (this._maxBytes && this._buffersTotalLength + this._buffer.length > this._maxBytes) {
     cb(new Error('more than maxBytes received'));
     return;
   }
 
-  this._buffer = Buffer.concat([this._buffer, chunk], newLength);
   this._parseDocs(cb);
 };
