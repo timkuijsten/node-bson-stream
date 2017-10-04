@@ -1,5 +1,8 @@
 # BSONStream
 
+## NOTE: this project is in maintenance mode
+**Only obvious bugs will be fixed, no extensive code changes will be done.**
+
 Read a binary stream that contains BSON objects and emit each as a JavaScript
 object. This module can be used in the browser with browserify.
 
