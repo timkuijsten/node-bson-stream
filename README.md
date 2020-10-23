@@ -1,49 +1,52 @@
 # BSONStream
 
-## NOTE: this project is in maintenance mode
-**Only obvious bugs will be fixed, no extensive code changes will be done.**
-
 Read a binary stream that contains BSON objects and emit each as a JavaScript
-object. This module can be used in the browser with browserify.
+object.
 
 
 ## Example
 
 Write each object of a BSON file created with mongodump to stdout:
 
-    var fs = require('fs');
-    var BSONStream = require('bson-stream');
+```js
+var fs = require('fs');
+var BSONStream = require('bson-stream');
 
-    var rs = fs.createReadStream('/some/data.bson');
+var rs = fs.createReadStream('/some/data.bson');
 
-    rs.pipe(new BSONStream()).on('data', function(obj) {
-      console.log(obj);
-    });
+rs.pipe(new BSONStream()).on('data', function(obj) {
+  console.log(obj);
+});
+```
 
 Example with an object containing a Buffer object as a value. The Buffer will be
 embedded when serialized by the BSON npm:
 
-    var assert = require('assert');
-    var bson = require('bson');
-    var BSON = new bson.BSONPure.BSON();
-    var BSONStream = require('bson-stream');
+```js
+var assert = require('assert');
+var BSON = require('bson');
+var BSONStream = require('bson-stream');
 
-    var buf = new Buffer([65, 67, 70]); // 'ACF'
-    var obj = { foo: buf };
+var buf = new Buffer([65, 67, 70]); // 'ACF'
+var obj = { foo: buf };
 
-    var bs = new BSONStream();
-    bs.on('data', function(obj) {
-      // the original Buffer value is embedded in a new BSON Buffer object and
-      // stored at the `buffer` key
-      assert.strictEqual(obj.foo.buffer.toString(), 'ACF');
-    });
+var bs = new BSONStream();
+bs.on('data', function(obj) {
+  // the original Buffer value is embedded in a new BSON Buffer object and
+  // stored at the `buffer` key
+  assert.strictEqual(obj.foo.buffer.toString(), 'ACF');
+  console.log('ok');
+});
 
-    bs.end(BSON.serialize(obj));
+bs.end(BSON.serialize(obj));
+```
 
 
 ## Installation
 
-    $ npm install bson-stream
+```sh
+$ npm i bson-stream
+```
 
 
 ## API
@@ -61,15 +64,15 @@ opts:
 Read a binary stream that contains BSON objects and emit each as a JavaScript
 object (or as a Buffer if opts.raw is true).
 
-Note: implements BSON specification 1.0 (http://bsonspec.org/spec.html), as
-supported by js-bson (https://www.npmjs.org/package/bson).
-
+Note: implements the [BSON specification], as supported by [js-bson].
 Note2: Buffer objects will be embedded in a new BSON Buffer object at `buffer`.
 
 
 ## Tests
 
-    $ npm test
+```sh
+$ npm test
+```
 
 
 ## License
@@ -89,3 +92,6 @@ ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
 WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
 ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
 OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+[BSON specification]: http://bsonspec.org/spec.html
+[js-bson]: https://www.npmjs.org/package/bson
